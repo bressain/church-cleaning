@@ -4,13 +4,13 @@ import * as family from './family'
 
 describe('family', () => {
 	describe('#insert', () => {
-		it('inserts a family record', async ({ db }) => {
-			if (!db) {
+		it('inserts a family record', async ({ conn }) => {
+			if (!conn) {
 				expect.fail('db not initialized')
 			}
 
 			const testFamily = generateFamily({
-				active: false,
+				available: false,
 				p1: generateFamilyPerson({
 					phone: '0123456789',
 					email: 'rando@gmail.com',
@@ -22,8 +22,8 @@ describe('family', () => {
 				}),
 			})
 
-			await family.insert(db, testFamily)
-			const resFamily = (await family.getAll(db)).find(f => f.id === testFamily.id)
+			await family.insert(conn, testFamily)
+			const resFamily = (await family.getAll(conn)).find(f => f.id === testFamily.id)
 
 			expect(testFamily).toEqual(resFamily)
 		})

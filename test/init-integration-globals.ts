@@ -1,17 +1,14 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import type { Database } from 'sqlite3'
-import { getDbConnection } from '../src/db/common'
-import runMigrations from '../src/db/run-migrations'
+import { type Connection, getDbConnection } from '../src/db/common'
 
 export const testDbFilePath = path.resolve(__dirname, 'test-db.sqlite')
-let db: Database | undefined
+let conn: Connection | undefined
 
 export async function setup() {
 	console.info('Initializing test db...')
-	db = await getDbConnection(testDbFilePath)
-	await runMigrations(db)
-	db.close()
+	conn = await getDbConnection(testDbFilePath, true)
+	conn.close()
 }
 
 export async function teardown() {

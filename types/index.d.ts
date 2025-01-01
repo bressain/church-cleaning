@@ -1,7 +1,7 @@
-import type { Database } from 'sqlite3'
+import type { Connection } from '../src/db/common'
 
 declare module 'vitest' {
 	export interface TestContext {
-		db?: Database
+		conn?: Connection
 	}
 }

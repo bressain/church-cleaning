@@ -1,24 +1,12 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import type { Database } from 'sqlite3'
-import { getDbConnection } from './db/common'
-import runMigrations from './db/run-migrations'
+// import type { Database } from 'sqlite3'
+// import { getCreateDefaultDbFilePath, getDbConnection } from './db/common'
+// import runMigrations from './db/run-migrations'
 
-console.info('loading...')
-
-const dbPath = path.resolve(__dirname, '../data')
-if (!fs.existsSync(dbPath)) {
-	fs.mkdirSync(dbPath)
-}
-const dbFilePath = path.resolve(dbPath, 'db.sqlite')
-
-let db: Database | undefined
-getDbConnection(dbFilePath)
-	.then(async res => {
-		db = res
-		await runMigrations(db)
-	})
-	.finally(() => {
-		console.info('closing connection...')
-		db?.close()
-	})
+console.info('try running a specific script instead')
+process.exit(0)
+// console.info('loading...')
+//
+// getDbConnection(getCreateDefaultDbFilePath(), true)
+// 	.then(async db => {
+// 		db.close()
+// 	})

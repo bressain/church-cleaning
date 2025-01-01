@@ -1,5 +1,4 @@
-import type { Database } from 'sqlite3'
-import { fetchAll } from './common'
+import { type Connection, fetchAll } from './common'
 
 interface AssignmentDto {
 	id: string
@@ -10,8 +9,8 @@ export interface Assignment {
 	name: string
 }
 
-export async function getAll(db: Database): Promise<Assignment[]> {
-	return (await fetchAll<AssignmentDto>(db, 'select id, name from assignment;')).map(dtoToDomain)
+export async function getAll(conn: Connection): Promise<Assignment[]> {
+	return (await fetchAll<AssignmentDto>(conn, 'select id, name from assignment;')).map(dtoToDomain)
 }
 
 function dtoToDomain(row: AssignmentDto): Assignment {

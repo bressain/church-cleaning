@@ -1,16 +1,15 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import type { Database } from 'sqlite3'
-import { execute, fetchFirst } from './common'
+import { type Connection, execute, fetchFirst } from './common'
 
-export default async function runMigrations(db: Database): Promise<void> {
+export default async function runMigrations(conn: Connection): Promise<void> {
 	try {
-		const latestMigration = await getLatestMigration(db)
+		const latestMigration = await getLatestMigration(conn)
 
 		const migrations = getMigrationFiles(latestMigration)
 		for (const migration of migrations) {
 			const sql = fs.readFileSync(path.resolve(__dirname, './migrations', migration), 'utf-8')
-			await execute(db, sql)
+			await execute(conn, sql)
 		}
 	} catch (error) {
 		console.error('Error running migrations')
@@ -18,10 +17,10 @@ export default async function runMigrations(db: Database): Promise<void> {
 	}
 }
 
-async function getLatestMigration(db: Database): Promise<number> {
+async function getLatestMigration(conn: Connection): Promise<number> {
 	try {
 		const latestVersion = await fetchFirst<{ version: number }>(
-			db,
+			conn,
 			'select version from schema_version order by version desc limit 1',
 		)
 		return latestVersion.version

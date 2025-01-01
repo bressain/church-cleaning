@@ -1,5 +1,4 @@
-import type { Database } from 'sqlite3'
-import { execute, fetchAll } from './common'
+import { type Connection, execute, fetchAll } from './common'
 
 export interface FamilyDto {
 	id: string
@@ -10,7 +9,7 @@ export interface FamilyDto {
 	p2_name: string | null
 	p2_phone: string | null
 	p2_email: string | null
-	active: number
+	available: number
 }
 
 export interface FamilyPerson {
@@ -23,16 +22,16 @@ export interface Family {
 	surname: string
 	p1: FamilyPerson
 	p2?: FamilyPerson
-	active: boolean
+	available: boolean
 }
 
-export async function insert(db: Database, family: Family): Promise<void> {
+export async function insert(conn: Connection, family: Family): Promise<void> {
 	const statement = `
-insert into family(id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, active)
+insert into family(id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available)
 values (?, ?, ?, ?, ?, ?, ?, ?, ?)
 `
 	return execute(
-		db,
+		conn,
 		statement,
 		family.id,
 		family.surname,
@@ -42,16 +41,16 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?)
 		family.p2?.name,
 		family.p2?.phone,
 		family.p2?.email,
-		family.active ? 1 : 0,
+		family.available ? 1 : 0,
 	)
 }
 
-export async function getAll(db: Database): Promise<Family[]> {
+export async function getAll(conn: Connection): Promise<Family[]> {
 	return (
 		await fetchAll<FamilyDto>(
-			db,
+			conn,
 			`
-select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, active
+select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available
 from family
 	`,
 		)
@@ -62,7 +61,7 @@ function dtoToDomain(row: FamilyDto): Family {
 	return {
 		id: row.id,
 		surname: row.surname,
-		active: !!row.active,
+		available: !!row.available,
 		p1: {
 			name: row.p1_name,
 			phone: row.p1_phone ?? undefined,
