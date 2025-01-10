@@ -7,6 +7,7 @@
 		"build": "tsc && pnpm copyNonJs",
 		"copyNonJs": "cp -R ./src/db/migrations ./dist/db",
 		"dev": "pnpm build && pnpm start",
+		"createAssignments": "pnpm build && node dist/scripts/create-assignments.js",
 		"listFamilies": "pnpm build && node dist/scripts/generate-family-list.js",
 		"missingData": "pnpm build && node dist/scripts/generate-missing-family-data.js",
 		"importMemberData": "pnpm build && node dist/scripts/import-member-data.js",

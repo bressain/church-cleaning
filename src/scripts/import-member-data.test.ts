@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as assignment from '../db/assignment'
 import * as family from '../db/family'
 import * as familyAssignment from '../db/family-assignment'
@@ -6,10 +5,10 @@ import { generateAssignment } from '../test/mothers'
 import { createMockConnection } from '../test/util'
 import importMemberData, { type RawData } from './import-member-data'
 
-vi.mock('./db/common')
-vi.mock('./db/assignment')
-vi.mock('./db/family')
-vi.mock('./db/family-assignment')
+vi.mock('../db/common')
+vi.mock('../db/assignment')
+vi.mock('../db/family')
+vi.mock('../db/family-assignment')
 
 describe('import-member-data', () => {
 	const conn = createMockConnection()

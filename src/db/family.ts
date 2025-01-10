@@ -28,7 +28,7 @@ export interface Family {
 export async function insert(conn: Connection, family: Family): Promise<void> {
 	const statement = `
 insert into family(id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?);
 `
 	return execute(
 		conn,
@@ -51,7 +51,20 @@ export async function getAll(conn: Connection): Promise<Family[]> {
 			conn,
 			`
 select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available
+from family;
+	`,
+		)
+	).map(dtoToDomain)
+}
+
+export async function getAllAvailable(conn: Connection): Promise<Family[]> {
+	return (
+		await fetchAll<FamilyDto>(
+			conn,
+			`
+select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available
 from family
+where available <> 0;
 	`,
 		)
 	).map(dtoToDomain)

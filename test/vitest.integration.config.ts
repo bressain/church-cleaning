@@ -4,6 +4,7 @@ export default defineConfig({
 	test: {
 		dir: './src',
 		include: ['**/*.test.integration.ts'],
+		globals: true,
 		globalSetup: './test/init-integration-globals.ts',
 		setupFiles: './test/init-integration.ts',
 	},
