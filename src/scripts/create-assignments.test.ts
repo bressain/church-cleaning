@@ -15,7 +15,7 @@ vi.mock('../util')
 
 describe('create-assignments', () => {
 	const conn = createMockConnection()
-	const date = DateTime.local(2025, 1, 1).toJSDate()
+	const monthDate = '2025-1'
 	const assignments = [generateAssignment({ name: 'Chapel' }), generateAssignment({ name: 'Gym' })]
 	const families = Array.from({ length: 20 }).map((_, idx) =>
 		generateFamily({
@@ -33,21 +33,13 @@ describe('create-assignments', () => {
 	it('generates family assignments for the given month Saturdays', async () => {
 		vi.mocked(familyAssignment.getAll).mockResolvedValue([])
 
-		const result = await createAssignments(conn, date)
+		const result = await createAssignments(conn, monthDate)
 
 		expect(result).toEqual({
-			[DateTime.local(2025, 1, 4).toISODate() ?? '']: families
-				.slice(0, 2)
-				.map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
-			[DateTime.local(2025, 1, 11).toISODate() ?? '']: families
-				.slice(2, 4)
-				.map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
-			[DateTime.local(2025, 1, 18).toISODate() ?? '']: families
-				.slice(4, 6)
-				.map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
-			[DateTime.local(2025, 1, 25).toISODate() ?? '']: families
-				.slice(6, 8)
-				.map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-01-04': families.slice(0, 2).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-01-11': families.slice(2, 4).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-01-18': families.slice(4, 6).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-01-25': families.slice(6, 8).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
 		})
 		expect(shuffle).toHaveBeenCalled()
 	})
@@ -68,7 +60,7 @@ describe('create-assignments', () => {
 		}
 		vi.mocked(familyAssignment.getAll).mockResolvedValue(famAssignments)
 
-		const result = await createAssignments(conn, date)
+		const result = await createAssignments(conn, monthDate)
 		const assigned = Object.values(result).flat()
 
 		for (const neverFam of neverAssigned) {
@@ -80,5 +72,19 @@ describe('create-assignments', () => {
 		for (const recentFam of recentlyAssigned) {
 			expect(assigned.find(a => a.family.id === recentFam.id)).toBeUndefined()
 		}
+	})
+
+	it('handles other months', async () => {
+		vi.mocked(familyAssignment.getAll).mockResolvedValue([])
+
+		const result = await createAssignments(conn, '2025-2')
+
+		expect(result).toEqual({
+			'2025-02-01': families.slice(0, 2).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-02-08': families.slice(2, 4).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-02-15': families.slice(4, 6).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-02-22': families.slice(6, 8).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+		})
+		expect(shuffle).toHaveBeenCalled()
 	})
 })

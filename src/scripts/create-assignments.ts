@@ -12,8 +12,9 @@ interface FamilyAndAssignment {
 	assignment: assignment.Assignment
 }
 type MonthAssignments = Record<string, FamilyAndAssignment[]>
+type MonthDate = `${number}-${number}`
 
-export default async function createAssignments(conn: Connection, monthDate: Date): Promise<MonthAssignments> {
+export default async function createAssignments(conn: Connection, monthDate: MonthDate): Promise<MonthAssignments> {
 	const assignments = await assignment.getAll(conn)
 	const families = await family.getAllAvailable(conn)
 	const familyAssignments = await familyAssignment.getAll(conn)
@@ -52,10 +53,10 @@ export default async function createAssignments(conn: Connection, monthDate: Dat
 	return Object.fromEntries(monthAssignments)
 }
 
-function getSaturdaysInMonth(monthDate: Date): Date[] {
-	// add one because JS dates are zero-based because reasons
-	const month = monthDate.getMonth() + 1
-	const year = monthDate.getFullYear()
+function getSaturdaysInMonth(monthDate: MonthDate): Date[] {
+	const split = monthDate.split('-')
+	const month = +split[1]
+	const year = +split[0]
 	const firstDay = DateTime.local(year, month, 1)
 	const daysInMonth = firstDay.daysInMonth ?? 0
 
@@ -109,14 +110,14 @@ function getOrderedFamiliesWithPastAssignments(
 
 if (require.main === module) {
 	getDbConnection(getCreateDefaultDbFilePath(), true).then(async conn => {
-		const results = await createAssignments(conn, new Date())
+		const results = await createAssignments(conn, '2025-2')
 		const lines: string[] = [
 			'Date,Chapel,East Side,West Side,Garbages / Windows,Gym / Stage / Kitchen,East Bathrooms,West Bathrooms',
 		]
 		for (const [saturday, assignments] of Object.entries(results)) {
 			lines.push(
 				[
-					DateTime.fromJSDate(new Date(saturday)).toLocaleString(),
+					DateTime.fromISO(saturday).toLocaleString(),
 					findFamilyNameByAssignment(assignments, 'chapel'),
 					findFamilyNameByAssignment(assignments, 'east-side'),
 					findFamilyNameByAssignment(assignments, 'west-side'),
