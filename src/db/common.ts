@@ -37,8 +37,7 @@ export async function createDbConnection(dbFilePath: string, runMigrations = fal
 	})
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: aligning to API
-export async function fetchFirst<T>(conn: Connection, query: string, ...params: any[]): Promise<T> {
+export async function fetchFirst<T>(conn: Connection, query: string, ...params: unknown[]): Promise<T> {
 	return new Promise((resolve, reject) => {
 		conn.get<T>(query, params, (error, row) => {
 			if (error) {
@@ -50,8 +49,7 @@ export async function fetchFirst<T>(conn: Connection, query: string, ...params: 
 	})
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: aligning to API
-export async function fetchAll<T>(conn: Connection, query: string, ...params: any[]): Promise<T[]> {
+export async function fetchAll<T>(conn: Connection, query: string, ...params: unknown[]): Promise<T[]> {
 	return new Promise((resolve, reject) => {
 		conn.all<T>(query, params, (error, rows) => {
 			if (error) {
@@ -63,8 +61,7 @@ export async function fetchAll<T>(conn: Connection, query: string, ...params: an
 	})
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: aligning to API
-export async function execute(conn: Connection, statement: string, ...params: any[]): Promise<void> {
+export async function execute(conn: Connection, statement: string, ...params: unknown[]): Promise<void> {
 	if (params.length) {
 		return new Promise((resolve, reject) => {
 			conn.run(statement, params, err => {

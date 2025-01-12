@@ -156,6 +156,7 @@ function getFamilyAssignments(
 if (require.main === module) {
 	createDbConnection(getScriptsDbFilePath(), true).then(async conn => {
 		console.info('Running import...')
+		// eslint-disable-next-line @typescript-eslint/no-require-imports
 		await importMemberData(conn, require('../../data/april-data.json'))
 		console.info('Import complete')
 		conn.close()
