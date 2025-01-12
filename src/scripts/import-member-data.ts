@@ -22,6 +22,8 @@ export interface RawData {
 	first_2023: string | null
 	assignment_2023_2: string | null
 	second_2023: string | null
+	notes: string
+	permission_given_date: string | null
 }
 
 type AssignmentsByName = Map<string, assignment.Assignment>
@@ -87,6 +89,8 @@ function createCleanFamilyRecord(record: RawData): family.Family {
 					email: cleanEmail(record.p2_email),
 				}
 			: undefined,
+		notes: record.notes,
+		permissionGivenDate: record.permission_given_date ? new Date(record.permission_given_date) : undefined,
 	}
 }
 

@@ -1,4 +1,4 @@
-import { type Connection, execute, fetchAll } from './common'
+import { type Connection, execute, fetchAll, fromDbString, toDbString } from './common'
 
 export interface FamilyDto {
 	id: string
@@ -10,6 +10,8 @@ export interface FamilyDto {
 	p2_phone: string | null
 	p2_email: string | null
 	available: number
+	notes: string
+	permission_given_date: string | null
 }
 
 export interface FamilyPerson {
@@ -23,12 +25,14 @@ export interface Family {
 	p1: FamilyPerson
 	p2?: FamilyPerson
 	available: boolean
+	notes: string
+	permissionGivenDate: Date | undefined
 }
 
 export async function insert(conn: Connection, family: Family): Promise<void> {
 	const statement = `
-insert into family(id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?);
+insert into family(id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available, notes, permission_given_date)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `
 	return execute(
 		conn,
@@ -42,6 +46,8 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?);
 		family.p2?.phone,
 		family.p2?.email,
 		family.available ? 1 : 0,
+		family.notes,
+		family.permissionGivenDate ? toDbString(family.permissionGivenDate) : undefined,
 	)
 }
 
@@ -50,7 +56,7 @@ export async function getAll(conn: Connection): Promise<Family[]> {
 		await fetchAll<FamilyDto>(
 			conn,
 			`
-select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available
+select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available, notes, permission_given_date
 from family;
 	`,
 		)
@@ -62,7 +68,7 @@ export async function getAllAvailable(conn: Connection): Promise<Family[]> {
 		await fetchAll<FamilyDto>(
 			conn,
 			`
-select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available
+select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available, notes, permission_given_date
 from family
 where available <> 0;
 	`,
@@ -87,5 +93,7 @@ function dtoToDomain(row: FamilyDto): Family {
 					email: row.p2_email ?? undefined,
 				}
 			: undefined,
+		notes: row.notes,
+		permissionGivenDate: row.permission_given_date ? fromDbString(row.permission_given_date) : undefined,
 	}
 }

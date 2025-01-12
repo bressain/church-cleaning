@@ -19,6 +19,8 @@ export const generateFamily = (overrides: Partial<Family> = {}): Family => ({
 	available: true,
 	surname: 'Calrissian',
 	p1: generateFamilyPerson(),
+	notes: '',
+	permissionGivenDate: undefined,
 	...overrides,
 })
 

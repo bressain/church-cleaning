@@ -26,6 +26,8 @@ describe('import-member-data', () => {
 				first_2023: '1/3/2023',
 				assignment_2024_2: 'West Side',
 				second_2024: '8/23/2024',
+				notes: 'Afraid of politics',
+				permission_given_date: '1/1/2023',
 			}),
 		]
 
@@ -42,6 +44,8 @@ describe('import-member-data', () => {
 					email: 'obiwan@jedi.org',
 				},
 				p2: undefined,
+				notes: 'Afraid of politics',
+				permissionGivenDate: new Date('1/1/2023'),
 			}),
 		)
 		expect(vi.mocked(familyAssignment).insert).toHaveBeenCalledWith(
@@ -133,6 +137,8 @@ function createRawMemberData(overrides: Partial<RawData> = {}): RawData {
 		first_2024: null,
 		assignment_2024_2: null,
 		second_2024: null,
+		notes: '',
+		permission_given_date: null,
 		...overrides,
 	}
 }

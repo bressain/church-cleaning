@@ -5,7 +5,7 @@ import * as familyAssignment from '../db/family-assignment'
 import { generateAssignment, generateFamily, generateFamilyAssignment, generateFamilyPerson } from '../test/mothers'
 import { createMockConnection } from '../test/util'
 import { shuffle } from '../util'
-import createAssignments from './create-assignments'
+import createAssignments, { saveAssignmentsInDb } from './create-assignments'
 
 vi.mock('../db/common')
 vi.mock('../db/assignment')
@@ -86,5 +86,52 @@ describe('create-assignments', () => {
 			'2025-02-22': families.slice(6, 8).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
 		})
 		expect(shuffle).toHaveBeenCalled()
+	})
+
+	describe('#saveAssignmentsInDb', () => {
+		it('saves month assignments in the db', async () => {
+			const monthAssignments = {
+				'2025-01-04': families.slice(0, 2).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+				'2025-01-11': families.slice(2, 4).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+				'2025-01-18': families.slice(4, 6).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+				'2025-01-25': families.slice(6, 8).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			}
+
+			await saveAssignmentsInDb(conn, monthAssignments)
+
+			expect(familyAssignment.insert).toHaveBeenCalledTimes(8)
+			expect(familyAssignment.insert).toHaveBeenCalledWith(
+				conn,
+				expect.objectContaining({
+					familyId: families[0].id,
+					assignmentId: assignments[0].id,
+					dateAssigned: new Date('2025-01-04'),
+				}),
+			)
+			expect(familyAssignment.insert).toHaveBeenCalledWith(
+				conn,
+				expect.objectContaining({
+					familyId: families[2].id,
+					assignmentId: assignments[0].id,
+					dateAssigned: new Date('2025-01-11'),
+				}),
+			)
+			expect(familyAssignment.insert).toHaveBeenCalledWith(
+				conn,
+				expect.objectContaining({
+					familyId: families[4].id,
+					assignmentId: assignments[0].id,
+					dateAssigned: new Date('2025-01-18'),
+				}),
+			)
+			expect(familyAssignment.insert).toHaveBeenCalledWith(
+				conn,
+				expect.objectContaining({
+					familyId: families[6].id,
+					assignmentId: assignments[0].id,
+					dateAssigned: new Date('2025-01-25'),
+				}),
+			)
+		})
 	})
 })

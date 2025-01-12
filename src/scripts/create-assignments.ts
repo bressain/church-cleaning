@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { DateTime } from 'luxon'
@@ -108,11 +109,25 @@ function getOrderedFamiliesWithPastAssignments(
 	return Array.from(assignedFamilies).toReversed()
 }
 
+export async function saveAssignmentsInDb(conn: Connection, monthAssignments: MonthAssignments): Promise<void> {
+	for (const [saturday, assignments] of Object.entries(monthAssignments)) {
+		const saturdayDate = new Date(saturday)
+		for (const assign of assignments) {
+			await familyAssignment.insert(conn, {
+				id: randomUUID(),
+				familyId: assign.family.id,
+				assignmentId: assign.assignment.id,
+				dateAssigned: saturdayDate,
+			})
+		}
+	}
+}
+
 if (require.main === module) {
 	getDbConnection(getCreateDefaultDbFilePath(), true).then(async conn => {
 		const results = await createAssignments(conn, '2025-2')
 		const lines: string[] = [
-			'Date,Chapel,East Side,West Side,Garbages / Windows,Gym / Stage / Kitchen,East Bathrooms,West Bathrooms',
+			'Date\tChapel\tEast Side\tWest Side\tGarbages / Windows\tGym / Stage / Kitchen\tEast Bathrooms\tWest Bathrooms',
 		]
 		for (const [saturday, assignments] of Object.entries(results)) {
 			lines.push(
@@ -125,10 +140,13 @@ if (require.main === module) {
 					findFamilyNameByAssignment(assignments, 'gym-stage-kitchen'),
 					findFamilyNameByAssignment(assignments, 'east-bathrooms'),
 					findFamilyNameByAssignment(assignments, 'west-bathrooms'),
-				].join(','),
+				].join('\t'),
 			)
 		}
-		fs.writeFileSync(path.resolve(__dirname, '../../data/assignments.csv'), lines.join('\n'))
+		fs.writeFileSync(path.resolve(__dirname, '../../data/assignments.tsv'), lines.join('\n'))
+
+		// await saveAssignmentsInDb(conn, results)
+
 		conn.close()
 	})
 
