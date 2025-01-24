@@ -86,11 +86,9 @@ export async function execute(conn: Connection, statement: string, ...params: an
 }
 
 export function toDbString(date: Date): string {
-	return DateTime.fromJSDate(date).setZone('utc').toFormat('yyyy-MM-dd hh:mm:ss.SSS')
+	return DateTime.fromJSDate(date).setZone('utc').toFormat('yyyy-MM-dd')
 }
 
 export function fromDbString(date: string): Date {
-	// SQLite likes to store date strings without a T separator as required by the
-	// ISO 8601 standard for some asinine reason
-	return DateTime.fromISO(date.replace(' ', 'T'), { zone: 'utc' }).toJSDate()
+	return DateTime.fromISO(date, { zone: 'utc' }).toJSDate()
 }

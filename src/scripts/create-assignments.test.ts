@@ -4,14 +4,14 @@ import * as family from '../db/family'
 import * as familyAssignment from '../db/family-assignment'
 import { generateAssignment, generateFamily, generateFamilyAssignment, generateFamilyPerson } from '../test/mothers'
 import { createMockConnection } from '../test/util'
-import { shuffle } from '../util'
+import shuffle from '../util/shuffle'
 import createAssignments, { saveAssignmentsInDb } from './create-assignments'
 
 vi.mock('../db/common')
 vi.mock('../db/assignment')
 vi.mock('../db/family')
 vi.mock('../db/family-assignment')
-vi.mock('../util')
+vi.mock('../util/shuffle')
 
 describe('create-assignments', () => {
 	const conn = createMockConnection()

@@ -1,3 +1,5 @@
+import type { MonthDate } from '../types'
+import getSaturdaysInMonth from '../util/get-saturdays-in-month'
 import { type Connection, execute, fetchAll, fromDbString, toDbString } from './common'
 
 export interface FamilyDto {
@@ -56,7 +58,7 @@ export async function getAll(conn: Connection): Promise<Family[]> {
 		await fetchAll<FamilyDto>(
 			conn,
 			`
-select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available, notes, permission_given_date
+select *
 from family;
 	`,
 		)
@@ -68,10 +70,27 @@ export async function getAllAvailable(conn: Connection): Promise<Family[]> {
 		await fetchAll<FamilyDto>(
 			conn,
 			`
-select id, surname, p1_name, p1_phone, p1_email, p2_name, p2_phone, p2_email, available, notes, permission_given_date
+select *
 from family
 where available <> 0;
 	`,
+		)
+	).map(dtoToDomain)
+}
+
+export async function getAllByMonth(conn: Connection, monthDate: MonthDate): Promise<Family[]> {
+	const saturdays = getSaturdaysInMonth(monthDate).map(toDbString)
+
+	return (
+		await fetchAll<FamilyDto>(
+			conn,
+			`
+select *
+from family_assignment fa
+  join family f on f.id = fa.family_id
+where fa.date_assigned in (${saturdays.map(() => '?').join(', ')})
+    `,
+			...saturdays,
 		)
 	).map(dtoToDomain)
 }

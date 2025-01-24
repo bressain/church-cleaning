@@ -6,14 +6,15 @@ import * as assignment from '../db/assignment'
 import { type Connection, getCreateDefaultDbFilePath, getDbConnection } from '../db/common'
 import * as family from '../db/family'
 import * as familyAssignment from '../db/family-assignment'
-import { shuffle } from '../util'
+import type { MonthDate } from '../types'
+import getSaturdaysInMonth from '../util/get-saturdays-in-month'
+import shuffle from '../util/shuffle'
 
 interface FamilyAndAssignment {
 	family: family.Family
 	assignment: assignment.Assignment
 }
 type MonthAssignments = Record<string, FamilyAndAssignment[]>
-type MonthDate = `${number}-${number}`
 
 export default async function createAssignments(conn: Connection, monthDate: MonthDate): Promise<MonthAssignments> {
 	const assignments = await assignment.getAll(conn)
@@ -52,25 +53,6 @@ export default async function createAssignments(conn: Connection, monthDate: Mon
 	}
 
 	return Object.fromEntries(monthAssignments)
-}
-
-function getSaturdaysInMonth(monthDate: MonthDate): Date[] {
-	const split = monthDate.split('-')
-	const month = +split[1]
-	const year = +split[0]
-	const firstDay = DateTime.local(year, month, 1)
-	const daysInMonth = firstDay.daysInMonth ?? 0
-
-	const saturdays: Date[] = []
-	for (let day = 1; day < daysInMonth; day++) {
-		const date = DateTime.local(year, month, day)
-
-		// 6 corresponds to Saturday
-		if (date.weekday === 6) {
-			saturdays.push(date.toJSDate())
-		}
-	}
-	return saturdays
 }
 
 function getFamiliesWithoutPastAssignments(
