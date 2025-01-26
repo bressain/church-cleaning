@@ -85,12 +85,27 @@ export async function getAllByMonth(conn: Connection, monthDate: MonthDate): Pro
 		await fetchAll<FamilyDto>(
 			conn,
 			`
-select *
+select f.*
 from family_assignment fa
   join family f on f.id = fa.family_id
-where fa.date_assigned in (${saturdays.map(() => '?').join(', ')})
+where fa.date_assigned in (${saturdays.map(() => '?').join(', ')});
     `,
 			...saturdays,
+		)
+	).map(dtoToDomain)
+}
+
+export async function getAllByDate(conn: Connection, date: Date): Promise<Family[]> {
+	return (
+		await fetchAll<FamilyDto>(
+			conn,
+			`
+select f.*
+from family_assignment fa
+  join family f on f.id = fa.family_id
+where fa.date_assigned = ?;
+      `,
+			toDbString(date),
 		)
 	).map(dtoToDomain)
 }

@@ -9,6 +9,7 @@
 		"dev": "pnpm build && pnpm start",
 		"createAssignments": "pnpm build && node dist/scripts/create-assignments.js",
 		"genMonthContactInfo": "pnpm build && node dist/scripts/generate-month-contact-info.js",
+		"genWeekContactInfo": "pnpm build && node dist/scripts/generate-week-contact-info.js",
 		"importMemberData": "pnpm build && node dist/scripts/import-member-data.js",
 		"listFamilies": "pnpm build && node dist/scripts/generate-family-list.js",
 		"missingData": "pnpm build && node dist/scripts/generate-missing-family-data.js",
