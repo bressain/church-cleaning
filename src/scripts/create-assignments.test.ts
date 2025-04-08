@@ -88,6 +88,21 @@ describe('create-assignments', () => {
 		expect(shuffle).toHaveBeenCalled()
 	})
 
+	it('handles 5 day weekends', async () => {
+		vi.mocked(familyAssignment.getAll).mockResolvedValue([])
+
+		const result = await createAssignments(conn, '2025-5')
+
+		expect(result).toEqual({
+			'2025-05-03': families.slice(0, 2).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-05-10': families.slice(2, 4).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-05-17': families.slice(4, 6).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-05-24': families.slice(6, 8).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+			'2025-05-31': families.slice(8, 10).map((fam, idx) => ({ family: fam, assignment: assignments[idx] })),
+		})
+		expect(shuffle).toHaveBeenCalled()
+	})
+
 	describe('#saveAssignmentsInDb', () => {
 		it('saves month assignments in the db', async () => {
 			const monthAssignments = {
