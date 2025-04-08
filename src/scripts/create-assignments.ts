@@ -127,7 +127,7 @@ if (require.main === module) {
 		}
 		fs.writeFileSync(path.resolve(__dirname, '../../data/assignments.tsv'), lines.join('\n'))
 
-		// await saveAssignmentsInDb(conn, results)
+		await saveAssignmentsInDb(conn, results)
 
 		conn.close()
 	})

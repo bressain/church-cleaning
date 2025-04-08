@@ -110,6 +110,10 @@ where fa.date_assigned = ?;
 	).map(dtoToDomain)
 }
 
+export async function remove(conn: Connection, familyId: string): Promise<void> {
+	await execute(conn, 'delete from family where id = ?;', familyId)
+}
+
 function dtoToDomain(row: FamilyDto): Family {
 	return {
 		id: row.id,

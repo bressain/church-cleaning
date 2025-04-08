@@ -41,6 +41,10 @@ from family_assignment
 	).map(dtoToDomain)
 }
 
+export async function removeByFamily(conn: Connection, familyId: string): Promise<void> {
+	await execute(conn, 'delete from family_assignment where family_id = ?;', familyId)
+}
+
 function dtoToDomain(row: FamilyAssignmentDto): FamilyAssignment {
 	return {
 		id: row.id,

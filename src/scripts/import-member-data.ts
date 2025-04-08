@@ -156,7 +156,7 @@ function getFamilyAssignments(
 if (require.main === module) {
 	getDbConnection(getCreateDefaultDbFilePath(), true).then(async conn => {
 		console.info('Running import...')
-		await importMemberData(conn, require('../../data/data.json'))
+		await importMemberData(conn, require('../../data/april-data.json'))
 		console.info('Import complete')
 		conn.close()
 	})
