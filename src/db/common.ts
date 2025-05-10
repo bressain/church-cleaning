@@ -12,7 +12,7 @@ export interface Connection {
 	close: Database['close']
 }
 
-export function getCreateDefaultDbFilePath() {
+export function getScriptsDbFilePath() {
 	const dbPath = path.resolve(__dirname, '../../data')
 	if (!fs.existsSync(dbPath)) {
 		fs.mkdirSync(dbPath)
@@ -20,7 +20,7 @@ export function getCreateDefaultDbFilePath() {
 	return path.resolve(dbPath, 'db.sqlite')
 }
 
-export async function getDbConnection(dbFilePath: string, runMigrations = false): Promise<Connection> {
+export async function createDbConnection(dbFilePath: string, runMigrations = false): Promise<Connection> {
 	return new Promise((resolve, reject) => {
 		const conn = new Database(dbFilePath, err => {
 			if (err) {

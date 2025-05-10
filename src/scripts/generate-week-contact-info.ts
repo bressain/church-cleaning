@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { type Connection, getCreateDefaultDbFilePath, getDbConnection } from '../db/common'
+import { type Connection, getScriptsDbFilePath, createDbConnection } from '../db/common'
 import * as family from '../db/family'
 
 export default async function generateWeekContactInfo(conn: Connection, saturday: Date): Promise<string[]> {
@@ -35,7 +35,7 @@ export default async function generateWeekContactInfo(conn: Connection, saturday
 }
 
 if (require.main === module) {
-	getDbConnection(getCreateDefaultDbFilePath(), true).then(async conn => {
+	createDbConnection(getScriptsDbFilePath(), true).then(async conn => {
 		const lines = await generateWeekContactInfo(conn, new Date('2025-02-22'))
 		fs.writeFileSync(path.resolve(__dirname, '../../data/week-contact-info.txt'), lines.join('\n'))
 		conn.close()

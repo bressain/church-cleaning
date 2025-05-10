@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { DateTime } from 'luxon'
 import * as assignment from '../db/assignment'
-import { type Connection, getCreateDefaultDbFilePath, getDbConnection } from '../db/common'
+import { type Connection, getScriptsDbFilePath, createDbConnection } from '../db/common'
 import * as family from '../db/family'
 import * as familyAssignment from '../db/family-assignment'
 import type { MonthDate } from '../types'
@@ -106,7 +106,7 @@ export async function saveAssignmentsInDb(conn: Connection, monthAssignments: Mo
 }
 
 if (require.main === module) {
-	getDbConnection(getCreateDefaultDbFilePath(), true).then(async conn => {
+	createDbConnection(getScriptsDbFilePath(), true).then(async conn => {
 		const results = await createAssignments(conn, '2025-5')
 		const lines: string[] = [
 			'Date\tChapel\tEast Side\tWest Side\tGarbages / Windows\tGym / Stage / Kitchen\tEast Bathrooms\tWest Bathrooms',

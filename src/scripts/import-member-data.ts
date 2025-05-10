@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import * as assignment from '../db/assignment'
-import { type Connection, getCreateDefaultDbFilePath, getDbConnection } from '../db/common'
+import { type Connection, getScriptsDbFilePath, createDbConnection } from '../db/common'
 import * as family from '../db/family'
 import * as familyAssignment from '../db/family-assignment'
 
@@ -154,7 +154,7 @@ function getFamilyAssignments(
 }
 
 if (require.main === module) {
-	getDbConnection(getCreateDefaultDbFilePath(), true).then(async conn => {
+	createDbConnection(getScriptsDbFilePath(), true).then(async conn => {
 		console.info('Running import...')
 		await importMemberData(conn, require('../../data/april-data.json'))
 		console.info('Import complete')

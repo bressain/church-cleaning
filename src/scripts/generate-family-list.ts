@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { unparse } from 'papaparse'
-import { type Connection, getCreateDefaultDbFilePath, getDbConnection } from '../db/common'
+import { type Connection, getScriptsDbFilePath, createDbConnection } from '../db/common'
 import * as family from '../db/family'
 
 export default async function generateFamilyList(conn: Connection) {
@@ -33,7 +33,7 @@ export default async function generateFamilyList(conn: Connection) {
 }
 
 if (require.main === module) {
-	getDbConnection(getCreateDefaultDbFilePath(), true).then(async conn => {
+	createDbConnection(getScriptsDbFilePath(), true).then(async conn => {
 		await generateFamilyList(conn)
 		conn.close()
 	})

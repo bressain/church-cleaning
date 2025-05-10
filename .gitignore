@@ -1,4 +1,14 @@
+/node_modules
+/.pnp
+.pnp.*
+
+/.next/
+/out/
+
+/build
+
 .DS_Store
-node_modules
-dist
 data
+dist
+
+next-env.d.ts
