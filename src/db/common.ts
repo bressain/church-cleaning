@@ -12,8 +12,24 @@ export interface Connection {
 	close: Database['close']
 }
 
+let connection: Connection
+export async function getConnection() {
+	if (!connection) {
+		connection = await createDbConnection(getNextDbFilePath())
+	}
+	return connection
+}
+
 export function getScriptsDbFilePath() {
 	const dbPath = path.resolve(__dirname, '../../data')
+	if (!fs.existsSync(dbPath)) {
+		fs.mkdirSync(dbPath)
+	}
+	return path.resolve(dbPath, 'db.sqlite')
+}
+
+export function getNextDbFilePath() {
+	const dbPath = path.resolve(__dirname, '../../../../data')
 	if (!fs.existsSync(dbPath)) {
 		fs.mkdirSync(dbPath)
 	}
