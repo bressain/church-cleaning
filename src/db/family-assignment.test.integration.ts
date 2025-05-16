@@ -16,12 +16,13 @@ describe('family-assignment', () => {
 			const famAssignment = generateFamilyAssignment({
 				assignmentId: assignments[0].id,
 				familyId: fam.id,
+				dateAssigned: new Date('2025/05/17'),
 			})
 
 			await familyAssignment.insert(conn, famAssignment)
 			const resFamilyAssignment = (await familyAssignment.getAll(conn)).find(fa => fa.id === famAssignment.id)
 
-			expect(famAssignment).toEqual(resFamilyAssignment)
+			expect(resFamilyAssignment).toEqual(famAssignment)
 		})
 	})
 })

@@ -90,5 +90,5 @@ export function toDbString(date: Date): string {
 }
 
 export function fromDbString(date: string): Date {
-	return DateTime.fromISO(date, { zone: 'utc' }).toJSDate()
+	return new Date(date.replaceAll('-', '/'))
 }

@@ -7,5 +7,6 @@ export default defineConfig({
 		globals: true,
 		globalSetup: './test/init-integration-globals.ts',
 		setupFiles: './test/init-integration.ts',
+		fileParallelism: false,
 	},
 })
