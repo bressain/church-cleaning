@@ -36,7 +36,7 @@ export default async function generateWeekContactInfo(conn: Connection, saturday
 
 if (require.main === module) {
 	createDbConnection(getScriptsDbFilePath(), true).then(async conn => {
-		const lines = await generateWeekContactInfo(conn, new Date('2025-02-22'))
+		const lines = await generateWeekContactInfo(conn, new Date('2025-08-30'))
 		fs.writeFileSync(path.resolve(__dirname, '../../data/week-contact-info.txt'), lines.join('\n'))
 		conn.close()
 	})

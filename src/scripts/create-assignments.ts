@@ -107,7 +107,7 @@ export async function saveAssignmentsInDb(conn: Connection, monthAssignments: Mo
 
 if (require.main === module) {
 	createDbConnection(getScriptsDbFilePath(), true).then(async conn => {
-		const results = await createAssignments(conn, '2025-5')
+		const results = await createAssignments(conn, '2025-8')
 		const lines: string[] = [
 			'Date\tChapel\tEast Side\tWest Side\tGarbages / Windows\tGym / Stage / Kitchen\tEast Bathrooms\tWest Bathrooms',
 		]
